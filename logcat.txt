@@ -1,0 +1,49 @@
+[TUT]  capturing a logcat for your friendly neighborhood developer
+     
+     
+    These provide valuable information for runtime debugging.  logcat is generally for java runtime debugging and boot processes although it can be useful for networking, touch instances, or looking at more specialized added logging for bug fixes etc.
+     
+BACKGROUND:  in a logcat e/ stands for error and /f stands for fatal.  this is usually what we are looking for.
+     
+  prerequisites:
+    you will need to make sure you have allow adb debugging enabled. if your ROM has logcat disabled, type vanir config in terminal and re-enable it or... search through the init.d scripts and comment out this line:
+    rm /dev/log/main by adding a # at the beginning
+     
+  boot method:
+    step 1) download the ROM or flashable containing whatever borked.apk
+         2) open a terminal on your computer and change profile settings to infinite scrolling
+         3) boot into recovery
+         4) flash
+         5) from the terminal on your PC, type adb logcat.  it should say "waiting for device"
+         6) reboot phone
+         7) *poof* spam of semi-useful information
+         8) edit >> select all to get text in window
+         9) copy and paste into a pastebin
+         10) NOTE: you can also do adb logcat -v long > name_of_problem.txt
+     
+  FC spamming method:
+    step 1) download and flash whatever borked.apk or ROM.zip
+         2) make sure your terminal is set to infinite scrolling
+         3) boot normally
+         4) wait a minute or two for the boot logcat to catch up
+         5) replicate the FC a few times if possible.  this will put the runtime debugging information at the end of the logcat file and it's a good idea to spam it once or twice to make it easer to find or see if it happens the same way every time.
+         6) select all copy/paste into a pastebin and send away.  the information necessary will be the most recent and at the bottom of the file.  It's not necessary but up to the dev's preference to trim off the fluff at the beginning of the file.  I personally don't care.
+     
+[TUT]  pulling a logcat via ADB with only the errors (truncated version):
+         1) connect your phone via usb
+         2) type adb devices to ensure the service is running and connection is good
+         3) allow phone to do it's thing.. FC.. replicate a few times like in the process listed above.  then type adb logcat to examine the file.  if you only want to log a specific error, you can type adb logcat WhateverBrokenService:E *:S -v long > name_of_problem.txt where WhateverBrokenService could be wpa_supplicant or dalvikvm or CommandListener etc etc etc.
+     
+     
+    In WhateverBrokenService:E, the :E = to look for Errors, the full list of options is as follows:
+    V — Verbose (lowest priority)
+    D — Debug
+    I — Info (default priority)
+    W — Warning
+    E — Error
+    F — Fatal
+    S — Silent (highest priority, on which nothing is ever printed)
+     
+    You can replace the :E with any other letter from above to get more info.
+    In order to filter out anything other than what you are looking for you must put a *:S after your last command
+
